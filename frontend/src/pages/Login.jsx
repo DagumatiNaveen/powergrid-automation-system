@@ -22,17 +22,30 @@ function Login() {
                 password: password
             });
 
-            const token = response.data;
+            // Get JWT token and role from backend response
+            const token = response.data.token;
+            const role = response.data.role;
 
+            // Store token and role
             localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
 
             setError("");
 
-            navigate("/dashboard");
+            // Navigate based on role
+            if (role === "ADMIN") {
+                navigate("/admin/dashboard");
+            } else if (role === "ENGINEER") {
+                navigate("/engineer/dashboard");
+            } else if (role === "OPERATOR") {
+                navigate("/operator/dashboard");
+            } else {
+                setError("Invalid user role");
+            }
 
         } catch (error) {
 
-            console.error(error);
+            console.error("Login error:", error);
 
             setError("Invalid email or password");
         }

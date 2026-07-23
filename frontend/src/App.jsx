@@ -1,42 +1,82 @@
 import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes
+    BrowserRouter,
+    Navigate,
+    Route,
+    Routes
 } from "react-router-dom";
-import Dashboard from "./pages/Dashboard.jsx"
+
 import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import EngineerDashboard from "./pages/engineer/EngineerDashboard.jsx";
+import OperatorDashboard from "./pages/operator/OperatorDashboard.jsx";
 
 function App() {
 
-  return (
-      <BrowserRouter>
+    return (
+        <BrowserRouter>
 
-        <Routes>
+            <Routes>
 
-            <Route
-                path="/dashboard"
-                element={<Dashboard />}
-            />
-          <Route
-              path="/"
-              element={<Navigate to="/login" />}
-          />
+                {/* Default Route */}
+                <Route
+                    path="/"
+                    element={<Navigate to="/login" replace />}
+                />
 
-          <Route
-              path="/login"
-              element={<Login />}
-          />
+                {/* Login Route */}
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-          <Route
-              path="/dashboard"
-              element={<h1>PowerGrid Dashboard</h1>}
-          />
+                {/* Admin Dashboard */}
+                <Route
+                    path="/admin/dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={["ADMIN"]}>
+                            <AdminDashboard />
+                        </ProtectedRoute>
+                    }
+                />
 
-        </Routes>
+                {/* Engineer Dashboard */}
+                <Route
+                    path="/engineer/dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={["ENGINEER"]}>
+                            <EngineerDashboard />
+                        </ProtectedRoute>
+                    }
+                />
 
-      </BrowserRouter>
-  );
+                {/* Operator Dashboard */}
+                <Route
+                    path="/operator/dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={["OPERATOR"]}>
+                            <OperatorDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+
+                {/* Unauthorized */}
+                <Route
+                    path="/unauthorized"
+                    element={<h1>403 - Access Denied</h1>}
+                />
+
+                {/* Invalid URL */}
+                <Route
+                    path="*"
+                    element={<Navigate to="/login" replace />}
+                />
+
+            </Routes>
+
+        </BrowserRouter>
+    );
 }
 
 export default App;
